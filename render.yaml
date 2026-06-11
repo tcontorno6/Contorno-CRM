@@ -1,0 +1,18 @@
+# Render Blueprint — deploys Contorno CRM as a static site.
+# In Render: New + → Blueprint → connect this repo, and it reads this file.
+services:
+  - type: web
+    name: contorno-crm
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+    routes:
+      # SPA fallback so any path serves the app.
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
