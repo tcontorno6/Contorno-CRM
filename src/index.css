@@ -248,6 +248,13 @@ input, select, textarea { font-family: inherit; }
 .column-body { display: flex; flex-direction: column; gap: 9px; min-height: 40px; }
 .column-empty { text-align: center; color: var(--muted); font-size: 12px; padding: 16px; border: 1px dashed var(--border-strong); border-radius: 10px; }
 
+/* collapsed (empty) stage column */
+.column.collapsed { flex: 0 0 48px; min-width: 48px; padding: 14px 4px; cursor: default; transition: flex-basis .2s ease; }
+.column.collapsed:hover { background: #eef1f6; }
+.column-collapsed { display: flex; flex-direction: column; align-items: center; gap: 12px; height: 100%; min-height: 120px; }
+.column-collapsed .column-count { margin: 0; }
+.column-title-v { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 600; font-size: 12.5px; color: var(--muted); white-space: nowrap; letter-spacing: .02em; }
+
 .kard { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 12px; cursor: pointer; box-shadow: var(--shadow-sm); transition: box-shadow .15s, transform .1s; }
 .kard:hover { box-shadow: var(--shadow-md); }
 .kard.dragging { opacity: .5; }
@@ -368,6 +375,13 @@ input, select, textarea { font-family: inherit; }
 .footnote { margin-top: 20px; font-size: 12px; color: var(--muted); line-height: 1.5; }
 
 /* ---------------- Settings ---------------- */
+.fresh-start { display: flex; align-items: center; gap: 16px; max-width: 760px; background: linear-gradient(120deg, #eef4ff, #f5f0ff); border: 1px solid #dfe7fb; border-radius: var(--radius); padding: 18px 20px; margin-bottom: 18px; }
+.fresh-icon { width: 44px; height: 44px; border-radius: 12px; background: #fff; display: grid; place-items: center; color: var(--primary); flex-shrink: 0; box-shadow: var(--shadow-sm); }
+.fresh-text { flex: 1; min-width: 0; }
+.fresh-text h3 { font-size: 15px; }
+.fresh-text p { margin: 4px 0 0; font-size: 12.5px; color: var(--text-2); }
+.fresh-start .btn { flex-shrink: 0; }
+
 .settings-card { max-width: 760px; }
 .settings-actions { margin-top: 16px; display: flex; gap: 10px; }
 .settings-actions.wrap { flex-wrap: wrap; }

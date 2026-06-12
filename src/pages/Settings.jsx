@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react'
-import { Download, Upload, RotateCcw, Trash2, Save, Database } from 'lucide-react'
+import { Download, Upload, RotateCcw, Trash2, Save, Database, Eraser, Sparkles } from 'lucide-react'
 import { useStore } from '../context/StoreContext'
 import { PageHeader } from '../components/ui'
 import Modal from '../components/Modal'
 
 export default function SettingsPage() {
-  const { leads, interactions, settings, updateSettings, importData, reset, clearAll } = useStore()
+  const { leads, interactions, tasks, settings, updateSettings, importData, reset, clearData, clearAll } = useStore()
   const fileRef = useRef(null)
   const [profile, setProfile] = useState({
     advisorName: settings.advisorName,
@@ -31,7 +31,7 @@ export default function SettingsPage() {
   }
 
   const exportData = () => {
-    const blob = new Blob([JSON.stringify({ leads, interactions, settings }, null, 2)], { type: 'application/json' })
+    const blob = new Blob([JSON.stringify({ leads, interactions, tasks, settings }, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -62,6 +62,17 @@ export default function SettingsPage() {
   return (
     <div className="page">
       <PageHeader title="Settings" subtitle="Your profile, goals, and data." />
+
+      <div className="fresh-start">
+        <div className="fresh-icon"><Sparkles size={20} /></div>
+        <div className="fresh-text">
+          <h3>Start with a clean slate</h3>
+          <p>The app comes preloaded with sample prospects so you can see how it works. Clear them out and start adding your own — your profile settings are kept.</p>
+        </div>
+        <button className="btn primary" onClick={() => setConfirm('cleardata')}>
+          <Eraser size={15} /> Clear sample data
+        </button>
+      </div>
 
       <div className="card settings-card">
         <h3 className="side-title">Advisor profile</h3>
@@ -120,18 +131,24 @@ export default function SettingsPage() {
         <Modal
           open
           onClose={() => setConfirm(null)}
-          title={confirm === 'reset' ? 'Reset to demo data?' : 'Clear everything?'}
+          title={
+            confirm === 'reset' ? 'Reset to demo data?'
+              : confirm === 'cleardata' ? 'Clear sample data?'
+                : 'Clear everything?'
+          }
           footer={
             <>
               <button className="btn ghost" onClick={() => setConfirm(null)}>Cancel</button>
               <button
                 className="btn danger"
                 onClick={() => {
-                  confirm === 'reset' ? reset() : clearAll()
+                  if (confirm === 'reset') reset()
+                  else if (confirm === 'cleardata') clearData()
+                  else clearAll()
                   setConfirm(null)
                 }}
               >
-                {confirm === 'reset' ? 'Reset' : 'Clear all data'}
+                {confirm === 'reset' ? 'Reset' : confirm === 'cleardata' ? 'Clear prospects' : 'Clear all data'}
               </button>
             </>
           }
@@ -139,7 +156,9 @@ export default function SettingsPage() {
           <p>
             {confirm === 'reset'
               ? 'This replaces your current data with the original sample leads. Export a backup first if you want to keep your work.'
-              : 'This permanently deletes all leads and interactions, leaving you with a blank slate. This cannot be undone.'}
+              : confirm === 'cleardata'
+                ? 'This removes all prospects, interactions, and tasks so you can start fresh with your own. Your profile and settings are kept. This cannot be undone.'
+                : 'This permanently deletes all leads, interactions, tasks, and resets your settings, leaving a completely blank app. This cannot be undone.'}
           </p>
         </Modal>
       )}

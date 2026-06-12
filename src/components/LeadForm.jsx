@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import Modal from './Modal'
 import { useStore } from '../context/StoreContext'
+import { allSources } from '../utils/stats'
 import {
-  LEAD_SOURCES, PIPELINE_STAGES, PRIORITIES, LOST_REASONS,
+  PIPELINE_STAGES, PRIORITIES, LOST_REASONS,
 } from '../data/constants'
 
 const toInputDate = (iso) => {
@@ -13,7 +14,7 @@ const toInputDate = (iso) => {
 }
 
 export default function LeadForm({ lead, onClose, onSaved }) {
-  const { addLead, updateLead } = useStore()
+  const { addLead, updateLead, leads } = useStore()
   const editing = Boolean(lead)
 
   const [form, setForm] = useState({
@@ -92,9 +93,15 @@ export default function LeadForm({ lead, onClose, onSaved }) {
 
         <label className="field">
           <span>Lead source</span>
-          <select value={form.source} onChange={set('source')}>
-            {LEAD_SOURCES.map((s) => <option key={s}>{s}</option>)}
-          </select>
+          <input
+            list="lead-source-options"
+            value={form.source}
+            onChange={set('source')}
+            placeholder="Pick one or type your own…"
+          />
+          <datalist id="lead-source-options">
+            {allSources(leads).map((s) => <option key={s} value={s} />)}
+          </datalist>
         </label>
         <label className="field">
           <span>Referred by</span>

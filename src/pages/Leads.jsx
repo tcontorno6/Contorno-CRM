@@ -3,7 +3,8 @@ import { Plus, Search, ArrowUpDown } from 'lucide-react'
 import { useStore } from '../context/StoreContext'
 import { PageHeader, Avatar, EmptyState } from '../components/ui'
 import { StageBadge, PriorityBadge } from '../components/Badge'
-import { PIPELINE_STAGES, LEAD_SOURCES } from '../data/constants'
+import { PIPELINE_STAGES } from '../data/constants'
+import { allSources } from '../utils/stats'
 import { currency, fmtDate, daysBetween } from '../utils/format'
 
 export default function Leads({ nav }) {
@@ -71,7 +72,7 @@ export default function Leads({ nav }) {
         </select>
         <select value={source} onChange={(e) => setSource(e.target.value)}>
           <option value="all">All sources</option>
-          {LEAD_SOURCES.map((s) => <option key={s}>{s}</option>)}
+          {allSources(leads).map((s) => <option key={s}>{s}</option>)}
         </select>
       </div>
 

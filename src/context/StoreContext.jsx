@@ -105,6 +105,9 @@ function reducer(state, action) {
         settings: { ...state.settings, ...(action.data.settings || {}) },
       }
     }
+    case 'CLEAR_DATA':
+      // Wipe prospect data but keep the advisor's settings (name, fee, goal…).
+      return { ...state, leads: [], interactions: [], tasks: [] }
     case 'RESET':
       return resetState()
     case 'CLEAR':
@@ -136,6 +139,7 @@ export function StoreProvider({ children }) {
       updateSettings: (patch) => dispatch({ type: 'UPDATE_SETTINGS', patch }),
       importData: (data) => dispatch({ type: 'IMPORT', data }),
       reset: () => dispatch({ type: 'RESET' }),
+      clearData: () => dispatch({ type: 'CLEAR_DATA' }),
       clearAll: () => dispatch({ type: 'CLEAR' }),
     }),
     []

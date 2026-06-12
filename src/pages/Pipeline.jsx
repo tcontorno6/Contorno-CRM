@@ -36,14 +36,26 @@ export default function Pipeline({ nav }) {
         {PIPELINE_STAGES.map((stage) => {
           const cards = leads.filter((l) => l.status === stage.id)
           const value = cards.reduce((s, l) => s + Number(l.estimatedValue || 0), 0)
+          // Collapse empty stages to a thin strip when nothing is being dragged,
+          // so the populated columns sit together with no blank space to scroll past.
+          const collapsed = cards.length === 0 && !dragId
           return (
             <div
               key={stage.id}
-              className={`column ${overStage === stage.id ? 'drop' : ''}`}
+              className={`column ${collapsed ? 'collapsed' : ''} ${overStage === stage.id ? 'drop' : ''}`}
               onDragOver={(e) => { e.preventDefault(); setOverStage(stage.id) }}
               onDragLeave={() => setOverStage((s) => (s === stage.id ? null : s))}
               onDrop={() => onDrop(stage.id)}
+              title={collapsed ? `${stage.label} — no prospects yet` : undefined}
             >
+              {collapsed ? (
+                <div className="column-collapsed">
+                  <span className="column-dot" style={{ background: stage.color }} />
+                  <span className="column-title-v">{stage.label}</span>
+                  <span className="column-count">0</span>
+                </div>
+              ) : (
+              <>
               <div className="column-head">
                 <span className="column-dot" style={{ background: stage.color }} />
                 <span className="column-title">{stage.label}</span>
@@ -80,6 +92,8 @@ export default function Pipeline({ nav }) {
                 ))}
                 {cards.length === 0 && <div className="column-empty">Drop here</div>}
               </div>
+              </>
+              )}
             </div>
           )
         })}

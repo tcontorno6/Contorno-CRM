@@ -56,19 +56,24 @@ export function computeStats(leads, interactions) {
 }
 
 export function sourceBreakdown(leads) {
+  // Build buckets dynamically so custom (typed-in) sources show as their own
+  // category instead of being lumped into "Other".
   const map = {}
-  LEAD_SOURCES.forEach((s) => (map[s] = { source: s, count: 0, won: 0, value: 0 }))
   leads.forEach((l) => {
-    const key = map[l.source] ? l.source : 'Other'
+    const key = l.source || 'Other'
+    if (!map[key]) map[key] = { source: key, count: 0, won: 0, value: 0 }
     map[key].count += 1
     if (l.status === 'Won') {
       map[key].won += 1
       map[key].value += Number(l.estimatedValue || 0)
     }
   })
-  return Object.values(map)
-    .filter((s) => s.count > 0)
-    .sort((a, b) => b.count - a.count)
+  return Object.values(map).sort((a, b) => b.count - a.count)
+}
+
+// Sources to offer in pickers/filters: the standard list plus any custom ones in use.
+export function allSources(leads) {
+  return [...new Set([...LEAD_SOURCES, ...leads.map((l) => l.source).filter(Boolean)])]
 }
 
 export function stageBreakdown(leads, stages) {
