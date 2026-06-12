@@ -35,6 +35,14 @@ export default function LeadForm({ lead, onClose, onSaved }) {
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
+  // Lead source: a dropdown of known sources plus an "Other — type your own" option
+  // that reveals a free-text box. (More reliable than a datalist across browsers.)
+  const CUSTOM = '__custom__'
+  const knownSources = allSources(leads)
+  const [customMode, setCustomMode] = useState(
+    Boolean(lead?.source) && !knownSources.includes(lead.source)
+  )
+
   const submit = (e) => {
     e.preventDefault()
     if (!form.name.trim()) return
@@ -93,15 +101,30 @@ export default function LeadForm({ lead, onClose, onSaved }) {
 
         <label className="field">
           <span>Lead source</span>
-          <input
-            list="lead-source-options"
-            value={form.source}
-            onChange={set('source')}
-            placeholder="Pick one or type your own…"
-          />
-          <datalist id="lead-source-options">
-            {allSources(leads).map((s) => <option key={s} value={s} />)}
-          </datalist>
+          <select
+            value={customMode ? CUSTOM : form.source}
+            onChange={(e) => {
+              if (e.target.value === CUSTOM) {
+                setCustomMode(true)
+                setForm((f) => ({ ...f, source: '' }))
+              } else {
+                setCustomMode(false)
+                setForm((f) => ({ ...f, source: e.target.value }))
+              }
+            }}
+          >
+            {knownSources.map((s) => <option key={s} value={s}>{s}</option>)}
+            <option value={CUSTOM}>➕ Other — type your own…</option>
+          </select>
+          {customMode && (
+            <input
+              className="custom-source-input"
+              value={form.source}
+              onChange={set('source')}
+              placeholder="Type the source (e.g. Podcast guest spot)"
+              autoFocus
+            />
+          )}
         </label>
         <label className="field">
           <span>Referred by</span>
