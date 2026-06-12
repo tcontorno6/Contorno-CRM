@@ -114,7 +114,7 @@ export default function LeadForm({ lead, onClose, onSaved }) {
             }}
           >
             {knownSources.map((s) => <option key={s} value={s}>{s}</option>)}
-            <option value={CUSTOM}>➕ Other — type your own…</option>
+            <option value={CUSTOM}>Add a custom source…</option>
           </select>
           {customMode && (
             <input
